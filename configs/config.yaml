@@ -1,0 +1,6 @@
+db:
+  username: "postgres"
+  host: "localhost"
+  port: "5432"
+  dbname: "order_db"
+  sslmode: "disable"
