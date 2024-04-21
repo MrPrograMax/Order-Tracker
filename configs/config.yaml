@@ -1,6 +1,13 @@
 db:
-  username: "postgres"
   host: "localhost"
   port: "5432"
-  dbname: "order_db"
+  username: "postgres"
+  dbname: "postgres"
   sslmode: "disable"
+
+
+nats:
+  uri: "nats://localhost:4222"
+
+
+port: "8080"
