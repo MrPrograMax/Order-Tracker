@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -31,7 +32,7 @@ func main() {
 	defer sc.Close()
 
 	logrus.Println("Sending orders...")
-	tik := time.NewTicker(time.Second)
+	tik := time.NewTicker(time.Second * 5)
 	for range tik.C {
 		order := CreateOrder()
 		orderJSON, err := json.Marshal(order)
@@ -41,8 +42,9 @@ func main() {
 		}
 
 		logrus.Println("Sending message to orders topic...")
+		logrus.Printf("Order Id: %s", order.OrderUid)
 
-		if err = sc.Publish("orders", orderJSON); err != nil { // Simple Synchronous Publisher
+		if err = sc.Publish("orders", orderJSON); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -114,6 +116,7 @@ func CreateOrder() wbtechl0.Order {
 		OofShard:          randomStr(numbers, 1),
 	}
 
+	order.OrderUid = uuid.New().String()
 	order.Delivery = delivery
 	order.Payment = payment
 	order.Items = append(order.Items, item)
