@@ -5,6 +5,18 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+const (
+	orderTable    = "order"
+	deliveryTable = "delivery"
+	paymentTable  = "payment"
+	itemTable     = "item"
+
+	orderTableFields    = "orderuid, tracknumber, entry, locale, internalsignature, customerid, deliveryservice, shardkey, smid, datecreated, oofshard"
+	deliveryTableFields = "name, phone, zip, city, address, region, email"
+	paymentTableFields  = "transaction, requestid, currency, provider, amount, paymentdt, bank, deliverycost, goodstotal, customfee"
+	itemTableFields     = "chrtid, tracknumber, price, rid, name, sale, size, totalprice, nmid, brand, status"
+)
+
 type Config struct {
 	Host     string
 	Port     string

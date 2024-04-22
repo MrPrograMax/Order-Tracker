@@ -1,4 +1,4 @@
-package service
+package repository
 
 import (
 	"fmt"
@@ -13,12 +13,12 @@ func NewCache() *Cache {
 	return &Cache{cache: make(map[string]wbtechl0.Order)}
 }
 
-func (c *Cache) GetOrder(OrderUid string) (*wbtechl0.Order, error) {
+func (c *Cache) GetOrder(OrderUid string) (wbtechl0.Order, error) {
 	if order, status := c.cache[OrderUid]; status {
-		return &order, nil
+		return order, nil
 	}
 
-	return nil, fmt.Errorf("order not found")
+	return wbtechl0.Order{}, fmt.Errorf("order not found")
 }
 
 func (c *Cache) AddOrder(order wbtechl0.Order) {

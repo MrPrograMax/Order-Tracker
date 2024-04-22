@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"github.com/jmoiron/sqlx"
 	wbtechl0 "wb-tech-l0"
 )
@@ -9,15 +8,15 @@ import (
 type Order interface {
 	GetById(OrderUid string) (wbtechl0.Order, error)
 	CreateOrder(order wbtechl0.Order) error
-	UploadCache(ctx context.Context) error
+	UploadCache() error
 }
 
 type Repository struct {
 	Order
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, cache *Cache) *Repository {
 	return &Repository{
-		Order: NewOrderPostgres(db),
+		Order: NewOrderPostgres(db, cache),
 	}
 }
