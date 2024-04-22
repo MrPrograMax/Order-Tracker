@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  nats:
+    image: nats-streaming:latest
+    ports:
+      - "4222:4222"
+
+  nats-ui:
+    image: piotrpersona/nats-streaming-ui:latest
+    ports:
+      - "8282:8282"
+    environment:
+      STAN_URL: "http://nats:4222"
+      STAN_MONITOR_URL: "http://nats:8222"
+      STAN_CLUSTER: test-cluster
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: order-db
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres:
