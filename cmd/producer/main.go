@@ -8,7 +8,10 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"math/rand"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 	wbtechl0 "wb-tech-l0"
 )
@@ -31,23 +34,30 @@ func main() {
 
 	defer sc.Close()
 
-	logrus.Println("Sending orders...")
-	tik := time.NewTicker(time.Second * 5)
-	for range tik.C {
-		order := CreateOrder()
-		orderJSON, err := json.Marshal(order)
+	go func() {
+		logrus.Println("Sending orders...")
+		tik := time.NewTicker(time.Second * 5)
+		for range tik.C {
+			order := CreateOrder()
+			orderJSON, err := json.Marshal(order)
 
-		if err != nil {
-			log.Fatal(err)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			logrus.Println("Sending message to orders topic...")
+			logrus.Printf("Order Id: %s", order.OrderUid)
+
+			if err = sc.Publish("orders", orderJSON); err != nil {
+				log.Fatal(err)
+			}
 		}
+	}()
 
-		logrus.Println("Sending message to orders topic...")
-		logrus.Printf("Order Id: %s", order.OrderUid)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
 
-		if err = sc.Publish("orders", orderJSON); err != nil {
-			log.Fatal(err)
-		}
-	}
 	logrus.Println("Sending process is finished")
 
 }
